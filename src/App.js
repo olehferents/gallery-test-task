@@ -6,13 +6,25 @@ import FullImageScreen from "./screens/FullImageScreen";
 import HomeScreen from "./screens/HomeScreen";
 
 const AppNavigator = createStackNavigator({
-        Home: {screen: HomeScreen},
-        FullImage: {screen: FullImageScreen},
+        Home: {
+            screen: HomeScreen,
+            navigationOptions: {
+                headerShown: false
+            }
+        },
+        FullImage: {
+            screen: FullImageScreen
+            ,
+            navigationOptions: {
+                headerShown: false
+            }
+        },
     },
     {
         initialRouteName: 'Home'
     }
-);
+    )
+;
 
 const App = createAppContainer(AppNavigator);
 
