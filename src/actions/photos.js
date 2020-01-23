@@ -1,9 +1,11 @@
-import {FETCH_PHOTOS_SUCCEED, FETCH_PHOTOS_FAILED, API_URL, CLIENT_ID, PER_PAGE} from '../constants';
+import {FETCH_PHOTOS_SUCCEED, FETCH_PHOTOS_FAILED, API_URL, CLIENT_ID} from '../constants';
 
-export const fetchPhotos = () => {
+export const fetchPhotos = (page) => {
     return async dispatch => {
         try {
-            let response = await fetch(API_URL + 'photos/?client_id=' + CLIENT_ID + '&per_page=' + PER_PAGE, {
+            let response =
+                await fetch(API_URL + 'photos/?client_id=' + CLIENT_ID + '&page=' + page + '&order_by=latest',
+                    {
                 method: 'GET'
             });
             response = await response.json();
@@ -19,7 +21,6 @@ export const fetchPhotos = () => {
             type: FETCH_PHOTOS_SUCCEED,
             payload: response
         }
-
     }
     function errorHandler(response) {
         return {
