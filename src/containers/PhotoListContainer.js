@@ -1,25 +1,63 @@
 import {fetchPhotos} from "../actions/photos";
 import {connect} from "react-redux";
-import {Dimensions, ScrollView, StyleSheet, View} from "react-native";
+import {ActivityIndicator, FlatList, View} from "react-native";
 import Photo from "../components/Photo";
-import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {bindActionCreators} from "redux";
 
 const PhotoListContainer = (props) => {
-    let photos;
-
+    let [page, setPage] = useState(1);
+    let [data, setData] = useState([]);
+    let [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
-        props.fetchPhotos().then(response => {
-            photos = response;
-        });
+        loadPhotos();
     }, []);
 
+    const loadMore = () => {
+        setPage(page + 1);
+        loadPhotos();
+    };
+
+    const loadPhotos = () => {
+        props.fetchPhotos(page).then((response) => {
+            if (page === 1) {
+                setData(response);
+                setIsLoading(false);
+            } else {
+                setData([...data, ...response]);
+                setIsLoading(false);
+            }
+        })
+    };
+
+    const renderFooter = () => {
+        return (
+            <View>
+                <ActivityIndicator animating size="large" />
+            </View>
+        );
+    };
+
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, padding: 20 }}>
+                <ActivityIndicator />
+            </View>
+        )
+    }
+
     return (
-        <ScrollView contentContainerStyle={{paddingBottom: 60}}>
-            {props.photos.map((photo, id) => {
-                return <Photo author={photo.user.name} img={photo.urls.regular} key={id}/>
-            })}
-        </ScrollView>
+        <FlatList
+            contentContainerStyle={{paddingBottom: 70}}
+            data={data}
+            renderItem={({item}) => (
+                <Photo author={item.user.name} img={item.urls.regular}/>
+            )}
+            keyExtractor={(item, index) => String(index)}
+            ListFooterComponent={renderFooter}
+            onEndReached={loadMore}
+            onEndReachedThreshold={100}
+        />
     )
 };
 
@@ -34,11 +72,5 @@ const mapDispatchToProps = (dispatch) => {
         fetchPhotos: bindActionCreators(fetchPhotos, dispatch)
     }
 };
-
-const styles = StyleSheet.create({
-    contentContainer: {
-        paddingVertical: 20
-    }
-});
 
 export default connect(mapStateToProps, mapDispatchToProps)(PhotoListContainer);
