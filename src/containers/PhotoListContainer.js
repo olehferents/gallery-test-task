@@ -38,6 +38,10 @@ const PhotoListContainer = (props) => {
         );
     };
 
+    const navigateToFullImage = () => {
+        props.navigate('FullImage');
+    };
+
     if (isLoading) {
         return (
             <View style={{ flex: 1, padding: 20 }}>
@@ -51,7 +55,7 @@ const PhotoListContainer = (props) => {
             contentContainerStyle={{paddingBottom: 70}}
             data={data}
             renderItem={({item}) => (
-                <Photo author={item.user.name} img={item.urls.regular}/>
+                <Photo author={item.user.name} img={item.urls.regular} showPhoto={navigateToFullImage}/>
             )}
             keyExtractor={(item, index) => String(index)}
             ListFooterComponent={renderFooter}
