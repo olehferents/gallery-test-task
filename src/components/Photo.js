@@ -1,12 +1,15 @@
 import React from "react";
-import {Image, StyleSheet, Text, View} from "react-native";
+import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 
 const Photo = (props) => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{props.author}</Text>
-            <Image style={{width: '100%', height: 250}}
-                   source={{uri: props.img}}/>
+            <TouchableOpacity onPress={props.showPhoto}>
+                <Image style={{width: '100%', height: 250}}
+                       source={{uri: props.img}}
+                       />
+            </TouchableOpacity>
         </View>
     );
 };
